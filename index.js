@@ -35,6 +35,22 @@ const run = async () => {
         message: `create successful ${inventory.name}`,
       });
     });
+    // get api inventory
+    app.get("/cars", async (req, res) => {
+      const limit = parseInt(req.query.limit);
+      const pageNum = parseInt(req.query.pageNum);
+      const inventory = carCollection.find();
+      const result = await inventory
+        .skip(limit * pageNum)
+        .limit(limit)
+        .toArray();
+
+      if (!result?.length) {
+        return res.send({ success: false, error: "No Data Available !!" });
+      }
+      const count = await carCollection.estimatedDocumentCount();
+      res.send({ success: true, data: result, count: count });
+    });
   } finally {
     // await client.close();
   }
