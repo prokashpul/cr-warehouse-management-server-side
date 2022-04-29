@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 require("dotenv").config();
 // port setup
@@ -50,6 +50,13 @@ const run = async () => {
       }
       const count = await carCollection.estimatedDocumentCount();
       res.send({ success: true, data: result, count: count });
+    });
+    // Delete api
+    app.delete("/cars/:id", async (req, res) => {
+      const carsId = req.params.id;
+      const query = { _id: ObjectId(carsId) };
+      const result = await carCollection.deleteOne(query);
+      res.send(result);
     });
   } finally {
     // await client.close();
