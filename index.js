@@ -25,9 +25,15 @@ const run = async () => {
     const carCollection = client.db("CarManager").collection("inventoryItems");
     //post api
     app.post("/cars", async (req, res) => {
-      const carInfo = req.body;
-      const cursor = await carCollection.insertOne(carInfo);
-      res.send(cursor);
+      const inventory = req.body;
+      if (!inventory.name || !inventory.email) {
+        return res.send({ success: false, error: "Fill up all field" });
+      }
+      const cursor = await carCollection.insertOne(inventory);
+      res.send({
+        success: true,
+        message: `create successful ${inventory.name}`,
+      });
     });
   } finally {
     // await client.close();
