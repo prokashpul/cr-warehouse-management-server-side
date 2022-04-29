@@ -58,6 +58,13 @@ const run = async () => {
       const result = await carCollection.deleteOne(query);
       res.send(result);
     });
+    //single inventory api
+    app.get("/inventory/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await carCollection.findOne(query);
+      res.send(result);
+    });
   } finally {
     // await client.close();
   }
