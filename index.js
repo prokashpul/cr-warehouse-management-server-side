@@ -84,7 +84,7 @@ const run = async () => {
       res.send(result);
     });
     //update post
-    app.put("/inventory/:id", async (req, res) => {
+    app.put("/cars/:id", async (req, res) => {
       const id = req.params.id;
       const updateData = req.body;
       const filter = { _id: ObjectId(id) };
