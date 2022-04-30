@@ -3,12 +3,30 @@ const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const { decode } = require("jsonwebtoken");
 // port setup
 const port = process.env.PORT || 5000;
 
 //Middleware
 app.use(cors());
 app.use(express.json());
+//jwt
+const verifyJWT = (req, res, next) => {
+  const authHeaders = req.headers.authorization;
+  if (!authHeaders) {
+    return res.status(401).send({ message: "unauthorize access" });
+  }
+  const token = authHeaders.split(" ")[1];
+  jwt.verify(token, process.env.SECRET_TOKEN, (err, decoded) => {
+    if (err) {
+      return res.status(403).send({ message: "Forbidden access" });
+    }
+    console.log("decoded", decoded);
+    req.decoded = decoded;
+    next();
+  });
+};
 
 // mongoDB
 
@@ -78,6 +96,13 @@ const run = async () => {
       };
       const result = await carCollection.updateOne(filter, updateDoc, options);
       res.send(result);
+    });
+    app.post("/login", async (req, res) => {
+      const user = req.body;
+      const accessToken = jwt.sign(user, process.env.SECRET_TOKEN, {
+        expiresIn: "1d",
+      });
+      res.send(accessToken);
     });
   } finally {
     // await client.close();
