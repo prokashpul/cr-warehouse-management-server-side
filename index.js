@@ -86,14 +86,15 @@ const run = async () => {
     //update post
     app.put("/cars/:id", async (req, res) => {
       const id = req.params.id;
-      const updateData = req.body;
+      const updateData =req.body;
       const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
       const updateDoc = {
         $set: {
-          ...updateData,
+          quantity: updateData?.inventory?.quantity
         },
       };
+      
       const result = await carCollection.updateOne(filter, updateDoc, options);
       res.send(result);
     });
