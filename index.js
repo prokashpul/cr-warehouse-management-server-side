@@ -41,6 +41,7 @@ const run = async () => {
   try {
     await client.connect();
     const carCollection = client.db("CarManager").collection("inventoryItems");
+    const blogCollection = client.db("CarManager").collection("blog");
     //post api
     app.post("/cars", async (req, res) => {
       const inventory = req.body;
@@ -83,21 +84,37 @@ const run = async () => {
       const result = await carCollection.findOne(query);
       res.send(result);
     });
-    //update / put 
+    //update / put
     app.put("/cars/:id", async (req, res) => {
       const id = req.params.id;
-      const updateData =req.body;
+      const updateData = req.body;
       const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
       const updateDoc = {
         $set: {
-          quantity: updateData?.inventory?.quantity
+          quantity: updateData?.inventory?.quantity,
         },
       };
-      
+
       const result = await carCollection.updateOne(filter, updateDoc, options);
       res.send(result);
     });
+
+    // blog post
+    //post api
+    app.post("/blogs", async (req, res) => {
+      const blog = req.body;
+      if (!blog.name || !blog.email) {
+        return res.send({ success: false, error: "Fill up all field" });
+      }
+      const cursor = await blogCollection.insertOne(blog);
+      res.send({
+        success: true,
+        message: `create successful`,
+      });
+    });
+
+    // jwt login add token
     app.post("/login", async (req, res) => {
       const user = req.body;
       const accessToken = jwt.sign(user, process.env.SECRET_TOKEN, {
