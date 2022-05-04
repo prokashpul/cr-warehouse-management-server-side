@@ -113,7 +113,13 @@ const run = async () => {
         message: `create successful`,
       });
     });
-
+    //post get api
+    //http://localhost:5000/blogs
+    app.get("/blogs", async (req, res) => {
+      const query = blogCollection.find();
+      const blogs = await query.toArray();
+      res.send(blogs);
+    });
     // jwt login add token
     app.post("/login", async (req, res) => {
       const user = req.body;
