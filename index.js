@@ -83,7 +83,7 @@ const run = async () => {
       const result = await carCollection.findOne(query);
       res.send(result);
     });
-    //update post
+    //update / put 
     app.put("/cars/:id", async (req, res) => {
       const id = req.params.id;
       const updateData =req.body;
