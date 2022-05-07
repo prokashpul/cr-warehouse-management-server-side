@@ -1,4 +1,4 @@
-## About thw Server
+## About the Server side
 
 - npm init
 - mpn i express mongodb cors dotenv
